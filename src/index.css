@@ -2,41 +2,71 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+/* FlexGas Design System - Modern Web3 Platform
 All colors MUST be HSL.
 */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Background & Text */
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Cards & Surfaces */
+    --card: 240 10% 7%;
+    --card-foreground: 0 0% 98%;
+    --card-hover: 240 8% 10%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Popover & Tooltips */
+    --popover: 240 10% 7%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary Brand Colors - Deep Blue to Purple */
+    --primary: 240 100% 65%;
+    --primary-foreground: 0 0% 98%;
+    --primary-muted: 240 100% 85%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Clean Grays */
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 240 5% 85%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted Elements */
+    --muted: 240 5% 12%;
+    --muted-foreground: 240 5% 65%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Purple Highlight */
+    --accent: 280 100% 70%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --success: 140 60% 50%;
+    --success-foreground: 0 0% 98%;
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 10%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Interactive Elements */
+    --border: 240 6% 20%;
+    --input: 240 6% 20%;
+    --ring: 240 100% 65%;
 
-    --radius: 0.5rem;
+    /* Gradients - Web3 Aesthetic */
+    --gradient-primary: linear-gradient(135deg, hsl(240 100% 65%), hsl(280 100% 70%));
+    --gradient-secondary: linear-gradient(135deg, hsl(240 6% 20%), hsl(240 10% 10%));
+    --gradient-accent: linear-gradient(135deg, hsl(280 100% 70%), hsl(320 100% 75%));
+    --gradient-hero: linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 15% 8%) 50%, hsl(240 10% 3.9%) 100%);
+
+    /* Shadows & Effects */
+    --shadow-glow: 0 0 40px hsl(240 100% 65% / 0.3);
+    --shadow-card: 0 4px 24px hsl(240 10% 0% / 0.4);
+    --shadow-elevated: 0 8px 40px hsl(240 10% 0% / 0.6);
+
+    /* Animation & Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
