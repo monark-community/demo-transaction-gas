@@ -36,7 +36,7 @@ export function WalletView() {
       </div>
 
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_28rem]">
-        <div className="order-2 flex flex-col gap-6 lg:order-1">
+        <div className="order-2 flex min-w-0 flex-col gap-6 lg:order-1">
           {/* Balances */}
           <section aria-labelledby="balances-title" className="rounded-3xl border bg-card p-5 sm:p-6">
             <div className="flex items-baseline justify-between gap-3">
@@ -85,7 +85,7 @@ export function WalletView() {
           </section>
         </div>
 
-        <div className="order-1 lg:sticky lg:top-24 lg:order-2">
+        <div className="order-1 min-w-0 lg:sticky lg:top-24 lg:order-2">
           <SendCard demo={demo} />
         </div>
       </div>
@@ -102,8 +102,10 @@ function ActivityRow({ record }: { record: TxRecord }) {
   const feeLine =
     record.kind === "receive"
       ? null
-      : record.route === "sponsored"
-        ? w.feeSponsored
+      : record.kind === "topup"
+        ? w.feeFromTank
+        : record.route === "sponsored"
+          ? w.feeSponsored
         : record.feeAmount !== undefined && record.feeToken
           ? t(w.feePaid, { fee: formatToken(record.feeAmount, record.feeToken, locale) })
           : null

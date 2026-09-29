@@ -33,9 +33,9 @@ export function gasQuote(chain: ChainId, token: TokenSymbol, settings: Pick<Demo
   return { gwei, units, feeEth, feeUsd: feeEth * PRICES.tETH }
 }
 
-/** Gas converted at the reference price, plus the service margin, rounded up to the cent, with a floor. */
+/** Gas converted at the reference price, plus the service margin, rounded up to a tenth of a cent, with a floor. */
 export function stableCharge(feeUsd: number): number {
-  return Math.max(MIN_CHARGE, Math.ceil(feeUsd * (1 + SERVICE_RATE) * 100 - 1e-9) / 100)
+  return Math.max(MIN_CHARGE, Math.ceil(feeUsd * (1 + SERVICE_RATE) * 1000 - 1e-9) / 1000)
 }
 
 export function stableQuote(gas: GasQuote, token: StableSymbol): StableQuote {

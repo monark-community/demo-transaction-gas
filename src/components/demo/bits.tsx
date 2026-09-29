@@ -6,6 +6,7 @@ import { TokenAmount } from "@/components/ui/token-amount"
 import { intlLocale, type Locale } from "@/i18n/config"
 import { CHAIN_IDS, CHAINS, DECIMALS, PRICES } from "@/lib/demo/network"
 import type { ChainId, TokenSymbol } from "@/lib/demo/types"
+import { formatUsd } from "@/lib/format"
 import { cn } from "@/lib/utils"
 
 /** A token amount through the registry `token-amount` component (DeFi family convention). */
@@ -22,16 +23,23 @@ export function Amount({
   usd?: boolean
   className?: string
 }) {
-  return (
+  const amount = (
     <TokenAmount
       value={BigInt(Math.round(value * 1e9))}
       decimals={9}
       symbol={token}
       fractionDigits={DECIMALS[token]}
       locale={intlLocale[locale]}
-      usdValue={usd ? value * PRICES[token] : undefined}
-      className={className}
+      className={usd ? undefined : className}
     />
+  )
+  if (!usd) return amount
+  // The dollar line is formatted here (not by the component) so it reads "$120.00" / "120,00 $", not "US$".
+  return (
+    <span className={cn("inline-flex flex-col leading-tight", className)}>
+      {amount}
+      <span className="text-xs text-muted-foreground tabular-nums">{formatUsd(value * PRICES[token], locale)}</span>
+    </span>
   )
 }
 

@@ -58,8 +58,8 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
           </div>
           <HeroCard
             copy={h.card}
-            stableFee={formatToken(1.92, "tUSDC", locale)}
-            amounts={[formatNumber(120, locale, 2, 2), formatNumber(80, locale, 2, 2), formatNumber(38.08, locale, 2, 2)]}
+            stableFee={formatToken(1.916, "tUSDC", locale)}
+            amounts={[formatNumber(120, locale, 2, 2), formatNumber(80, locale, 2, 2), formatNumber(38.084, locale, 3, 2)]}
           />
         </div>
       </section>

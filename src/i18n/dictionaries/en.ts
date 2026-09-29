@@ -81,12 +81,12 @@ const en = {
       noNative: "No tETH",
       states: { checking: "Checking routes…", signing: "Signing…", pending: "Sending…", confirmed: "Sent" },
       paidBySponsor: "Fee paid by the club · $0 for you",
-      paidInStable: "Fee: 1.92 tUSDC",
+      paidInStable: "Fee: 1.916 tUSDC",
     },
     routes: {
       title: "Three ways a fee gets paid",
       sponsored: { title: "Sponsored", body: "Your community or the app pays, within limits it sets.", chip: "Paid by Campus Blockchain Club" },
-      stablecoin: { title: "In your stablecoin", body: "Quoted in tUSDC, converted to gas for you.", chip: "1.92 tUSDC", timer: "0:30" },
+      stablecoin: { title: "In your stablecoin", body: "Quoted in tUSDC, converted to gas for you.", chip: "1.916 tUSDC", timer: "0:30" },
       native: { title: "Native gas, as a fallback", body: "If nothing else applies and you hold tETH.", chip: "0.00057 tETH" },
     },
     who: {
@@ -310,6 +310,7 @@ const en = {
       more: "Show more",
       kinds: { send: "Sent to {name}", receive: "Received from {name}", topup: "Top-up of {name}" },
       feeSponsored: "Fee sponsored",
+      feeFromTank: "Fee paid from the tank",
       feePaid: "Fee {fee}",
     },
     send: {

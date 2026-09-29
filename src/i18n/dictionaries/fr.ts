@@ -82,12 +82,12 @@ const fr: Dictionary = {
       noNative: "Pas de tETH",
       states: { checking: "Vérification des options…", signing: "Signature…", pending: "Envoi en cours…", confirmed: "Envoyé" },
       paidBySponsor: "Frais payés par le club · 0 $ pour vous",
-      paidInStable: "Frais : 1,92 tUSDC",
+      paidInStable: "Frais : 1,916 tUSDC",
     },
     routes: {
       title: "Trois façons de payer les frais",
       sponsored: { title: "Sponsorisé", body: "Votre communauté ou l'application paie, dans les limites qu'elle fixe.", chip: "Payé par le Campus Blockchain Club" },
-      stablecoin: { title: "Dans votre stablecoin", body: "Chiffré en tUSDC, converti en gas pour vous.", chip: "1,92 tUSDC", timer: "0:30" },
+      stablecoin: { title: "Dans votre stablecoin", body: "Chiffré en tUSDC, converti en gas pour vous.", chip: "1,916 tUSDC", timer: "0:30" },
       native: { title: "Le gas natif, en dernier recours", body: "Si rien d'autre ne s'applique et que vous avez du tETH.", chip: "0,00057 tETH" },
     },
     who: {
@@ -311,6 +311,7 @@ const fr: Dictionary = {
       more: "Voir plus",
       kinds: { send: "Envoyé à {name}", receive: "Reçu de {name}", topup: "Recharge du {name}" },
       feeSponsored: "Frais sponsorisés",
+      feeFromTank: "Frais payés par le réservoir",
       feePaid: "Frais {fee}",
     },
     send: {

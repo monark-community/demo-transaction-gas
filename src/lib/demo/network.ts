@@ -6,10 +6,10 @@ import type { ChainId, StableSymbol, TokenSymbol } from "./types"
  */
 export const CHAIN_IDS: ChainId[] = ["sepolia", "base-sepolia", "arbitrum-sepolia"]
 
-export const CHAINS: Record<ChainId, { name: string; gwei: number; color: string }> = {
-  sepolia: { name: "Sepolia", gwei: 6, color: "var(--chart-3)" },
-  "base-sepolia": { name: "Base Sepolia", gwei: 0.06, color: "var(--chart-4)" },
-  "arbitrum-sepolia": { name: "Arbitrum Sepolia", gwei: 0.1, color: "var(--chart-5)" },
+export const CHAINS: Record<ChainId, { name: string; gwei: number }> = {
+  sepolia: { name: "Sepolia", gwei: 6 },
+  "base-sepolia": { name: "Base Sepolia", gwei: 0.06 },
+  "arbitrum-sepolia": { name: "Arbitrum Sepolia", gwei: 0.1 },
 }
 
 /** Reference prices shared by the Monark DeFi demos. */
@@ -29,9 +29,7 @@ export const QUOTE_SECONDS = 30
 export const SPIKE_FACTOR = 4
 
 /** Decimal places shown per token. */
-export const DECIMALS: Record<TokenSymbol, number> = { tETH: 7, tUSDC: 2, tDAI: 2, tLINK: 3 }
-
-export const NETWORK_LABEL = "testnet"
+export const DECIMALS: Record<TokenSymbol, number> = { tETH: 7, tUSDC: 3, tDAI: 3, tLINK: 3 }
 
 /** Block height reference for seeded data (12 s blocks). */
 export const SEED_HEAD = 7_412_880

@@ -24,7 +24,7 @@ export default async function OpenGraphImage({ params }: { params: Promise<{ loc
   const muted = "#625952"
   const rows: { title: string; note: string; state: "chosen" | "ok" | "skipped" }[] = [
     { title: c.sponsored, note: c.paidBySponsor, state: "chosen" },
-    { title: c.stablecoin, note: locale === "fr" ? "1,92 tUSDC" : "1.92 tUSDC", state: "ok" },
+    { title: c.stablecoin, note: locale === "fr" ? "1,916 tUSDC" : "1.916 tUSDC", state: "ok" },
     { title: c.native, note: c.noNative, state: "skipped" },
   ]
 

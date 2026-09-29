@@ -118,7 +118,7 @@ export interface DemoState {
 export interface TxSummary {
   title: string
   rows?: { label: string; value: string }[]
-  /** Fee line, already formatted ("Sponsored by …", "1.92 tUSDC", "0.00057 tETH"). */
+  /** Fee line, already formatted ("Sponsored by …", "1.916 tUSDC", "0.00057 tETH"). */
   fee?: string
   chain?: ChainId
   movesValue: boolean

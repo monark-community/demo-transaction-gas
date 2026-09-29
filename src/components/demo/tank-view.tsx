@@ -377,12 +377,12 @@ function TankActivity({ demo }: { demo: DemoState }) {
                     </time>
                   </p>
                 </div>
-                <span className={cn("shrink-0 text-right text-sm font-bold tabular-nums", e.kind === "topup" && "text-success")}>
+                <span className={cn("flex shrink-0 flex-col items-end text-right text-sm font-bold tabular-nums", e.kind === "topup" && "text-success")}>
                   {e.kind === "topup" ? (
                     `+${formatToken(e.eth, "tETH", locale)}`
                   ) : (
                     <>
-                      −{formatUsd(e.eth * PRICES.tETH, locale)}
+                      <span>−{formatUsd(e.eth * PRICES.tETH, locale)}</span>
                       <Amount value={e.eth} token="tETH" locale={locale} className="text-xs font-normal text-muted-foreground" />
                     </>
                   )}
