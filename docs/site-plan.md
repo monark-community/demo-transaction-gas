@@ -1,6 +1,6 @@
 # FlexGas by Monark: site plan
 
-Status: plan for the rebuild on `develop`. It is kept in sync with the code as the site is built.
+Status: shipped on `develop`. This plan describes what the site does and is kept in sync with the code.
 
 - Product: **FlexGas**, Monark's gas module: people move their tokens without holding the network's gas token, because a sponsor covers the fee or the fee is taken in a stablecoin they already hold.
 - Authoritative description: https://www.monark.io/en/project/transaction-gas
@@ -29,7 +29,7 @@ Status: plan for the rebuild on `develop`. It is kept in sync with the code as t
 | Gas tank (sponsor) | A smart contract balance that pays other people's fees (the project page's "gas fee paying account"). Funded by a community, dApp, brand or friend. |
 | Sponsor safeguards | Limits the sponsor sets on the tank: a per-transaction fee cap, a daily number of sponsored transactions per member, which networks it covers, a pause switch and a low-balance alert. |
 | Paymaster | The contract that settles the fee on the user's behalf (ERC-4337). It pays gas in tETH and collects what the route says: nothing (sponsored) or stablecoins. |
-| Stablecoin quote | The price, in tUSDC or tDAI, of paying this fee: the gas cost converted at the reference price, plus a 5% service margin (minimum 0.02). Valid for 30 seconds. |
+| Stablecoin quote | The price, in tUSDC or tDAI, of paying this fee: the gas cost converted at the reference price, plus a 5% service margin, rounded up to a tenth of a cent, minimum 0.02. Valid for 30 seconds. |
 | Auto-conversion | On the stablecoin route, part of the payment is converted to tETH to settle the gas; the rest is the service margin. |
 | Max fee | The user's own safeguard: a quote above it is never used. |
 | Native fallback | When no sponsor applies and the stablecoin route is blocked, the fee is paid the ordinary way, in tETH, if the wallet holds some. |
@@ -64,7 +64,7 @@ Supporting benefits, as outcomes:
 - No eyebrow.
 - **Primary CTA:** "Launch the demo" / « Lancer la démo » → `/{locale}/app`.
 - **Secondary CTA:** "How a fee gets paid" / « Comment les frais sont payés » → `/{locale}/how-it-works`.
-- **Visual:** a **live send card**, built in code. Noor's wallet shows *0 tETH* (tagged "no gas") and 120 tUSDC. She sends 40 tUSDC to Café Lumen; the three routes are checked one after the other (sponsored ✓, chosen), the card goes *Signing → Pending → Confirmed*, and the fee line reads "Fee paid by Campus Blockchain Club · $0 for you". A second loop shows the sponsor's daily limit reached, the route falling through to *Stablecoin* and the fee chip "1.92 tUSDC". About 9 s per loop, calm, final state rendered directly with reduced motion. Product UI over a photo because the product's promise is exactly this moment. The mesh butterfly sits large and cropped behind it.
+- **Visual:** a **live send card**, built in code. Noor's wallet shows *0 tETH* (tagged "no gas") and 120 tUSDC. She sends 40 tUSDC to Café Lumen; the three routes are checked one after the other (sponsored ✓, chosen), the card goes *Signing → Pending → Confirmed*, and the fee line reads "Fee paid by Campus Blockchain Club · $0 for you". A second loop shows the sponsor's daily limit reached, the route falling through to *Stablecoin* and the fee chip "1.916 tUSDC". About 9 s per loop, calm, final state rendered directly with reduced motion. Product UI over a photo because the product's promise is exactly this moment. The mesh butterfly sits large and cropped behind it.
 
 ## 4. Page map
 
@@ -74,7 +74,7 @@ All routes live under `/{locale}` (`en`, `fr`). `/` and any locale-less path red
 |-|-|-|
 | `/{locale}` | Home: the idea in 30 seconds, then into the demo. Hero + 4 sections (budget: 5). | Hero with live send card · "Three ways a fee gets paid" (3 cards, each a title, one line and a UI fragment) · "Who it's for" (3 photo cards: newcomers, communities and dApps, local partners and brands) · FAQ (4 questions; the site's only FAQ) · Closing CTA (heading + button) |
 | `/{locale}/app` | Demo, user side: the wallet. | Connect gate (when disconnected) · Balances with a network switcher (Sepolia, Base Sepolia, Arbitrum Sepolia) · Send card: token, amount, recipient, **fee routes** (three rows, best one selected, unavailable ones with a one-line reason), max fee chip, *Send* · Result panel after a send · Recent activity (4 at a time) |
-| `/{locale}/app/sponsor` | Demo, sponsor side: the Campus Blockchain Club gas tank that Noor runs as treasurer. | Tank (balance gauge with the low-balance mark, ≈ transfers left, *Top up*) · Safeguards form (per-transaction cap, daily limit per member, networks, pause) · Sponsored activity (5 at a time) |
+| `/{locale}/app/tank` | Demo, sponsor side: the Campus Blockchain Club gas tank that Noor runs as treasurer. | Tank (balance gauge with the low-balance mark, ≈ transfers left, *Top up*) · Safeguards form (per-transaction cap, daily limit per member, networks, pause) · Sponsored activity (5 at a time) |
 | `/{locale}/how-it-works` | Mechanics for curious users, students and developers. Everything mechanical lives here. | One-line intro · Which route pays (cascade diagram) · The stablecoin quote (worked example + split diagram) · Safeguards (for you / for sponsors) · Networks (table) · For developers (one line; integration snippet behind a disclosure) · CTA |
 | `/{locale}/credits` | Photo, type, icon and brand credits (required by the asset rules). | Photos · Type and icons · Monark brand assets |
 | `/{locale}/pricing` | **Internal strategy review only.** Never linked, excluded from the sitemap, `noindex, nofollow`. | Price card · What each party pays · Reasoning |
@@ -84,7 +84,7 @@ Two app routes and no more: the product has exactly two sides (the person paying
 
 **Header** (standard Monark navbar, guidelines §2 and §10, reference Splitflow `src/components/site/`): butterfly mark 28px + "FlexGas" (Nunito Sans 800, 18px) on one line, aria-label "FlexGas, by Monark: home" · 28px gap · links *Overview*, *How it works*, *Demo* (active in `foreground`) · right: Demo chip (`primary` at 8% light / 15% dark, `primary-ink` text) · EN/FR switch · theme toggle · primary *Launch demo*. Inside `/app` the action becomes the `connect-wallet` component. Below `lg`: brand + menu button; the sheet holds everything else. Marketing pages have exactly one top bar.
 
-**Demo app bar** (only under `/app`, one compact bar): section nav *Wallet* · *Gas tank*, and one pill that shows the simulated network status and opens *Demo controls* (slow network, fail next transaction, gas spike, paymaster offline, reset demo). No testnet strip.
+**Demo app bar** (only under `/app`, one compact bar): section nav *Wallet* · *Gas tank*, and one pill that shows the simulated network status and opens *Demo controls* (gas spike, paymaster offline, slow network, fail next transaction, reset demo); a small count on the pill shows how many are on. No testnet strip.
 
 **Footer** (three bands): product line + links (Overview, How it works, Demo, Credits) · "FlexGas is built by Monark", Monark logo + tagline, project page and GitHub links, social icons · "© {year} Monark · Open source", "Demo · simulated data", photo credits link.
 
@@ -100,13 +100,13 @@ Two app routes and no more: the product has exactly two sides (the person paying
 
 ## 6. Key flows
 
-Every transaction goes through a simulated wallet prompt ("Confirm in your wallet": summary rows, network, **fee line showing the route** — "Sponsored by Campus Blockchain Club", "1.92 tUSDC (quote locked)" or "0.00057 tETH" — the testnet notice, *Confirm* / *Reject*), then *pending* with a hash (1.2 to 2.4 s; 3 to 6 s with "slow network"), then *confirmed* in a block or *failed*. Rejecting in the prompt gives "You rejected the request in your wallet. Nothing was sent."; "Fail the next transaction" gives "The network rejected the transaction. Nothing moved and no fee was charged."
+Every transaction goes through a simulated wallet prompt ("Confirm in your wallet": summary rows, network, **fee line showing the route** — "Sponsored by Campus Blockchain Club", "1.916 tUSDC (quote locked)" or "0.00057 tETH" — the testnet notice, *Confirm* / *Reject*), then *pending* with a hash (1.2 to 2.4 s; 3 to 6 s with "slow network"), then *confirmed* in a block or *failed*. Rejecting in the prompt gives "You rejected the request in your wallet. Nothing was sent."; "Fail the next transaction" gives "The network rejected the transaction. Nothing moved and no fee was charged."
 
 1. **Connect.** `/app` → *Connect demo wallet* → sign-in message (no fee) → *pending* ("Waiting for signature…") → *connected*: Noor Haddad, `0x…` in the header. *Failed*: rejecting shows "You declined the sign-in. Nothing was shared." with retry.
-2. **Send with zero gas, sponsored.** Sepolia, 0 tETH. Send 40 tUSDC to Café Lumen → routes: *Sponsored by Campus Blockchain Club* ✓ ("2 of 3 left today"), *Stablecoin* (1.92 tUSDC), *Native* ✗ ("No tETH on Sepolia") → *Send* → prompt (fee: Sponsored) → *pending* → *confirmed*: result "Sent 40 tUSDC to Café Lumen · fee paid by the club". Balances update; the tank's activity shows the new sponsored fee. *Validation*: invalid address, amount above balance, zero amount.
-3. **Pay the fee in a stablecoin.** Switch to Arbitrum Sepolia (the club doesn't cover it) or send a third time on Sepolia (daily limit reached): the sponsored row shows why it's skipped, *Stablecoin* is selected with "0.03 tDAI" and a 30-second countdown (it re-quotes by itself; *How is this calculated?* shows gas × price + 5%) → *Send* → prompt (fee locked) → *pending* → *confirmed*: the **fee split**: the stablecoin chip splits into "converted to tETH for gas" and "service". *Blocked*: with *Gas spike* on Sepolia the quote exceeds the sponsor's cap and your max fee; all three routes show their reason and *Send* is replaced by "No route can pay this fee" with two actions: *Raise max fee* and *Switch network*.
+2. **Send with zero gas, sponsored.** Sepolia, 0 tETH. Send 40 tUSDC to Café Lumen → routes: *Sponsored by Campus Blockchain Club* ✓ ("2 of 3 left today"), *Stablecoin* (1.916 tUSDC), *Native* ✗ ("No tETH on Sepolia") → *Send* → prompt (fee: Sponsored) → *pending* → *confirmed*: result "Sent 40 tUSDC to Café Lumen · fee paid by the club". Balances update; the tank's activity shows the new sponsored fee. *Validation*: invalid address, amount above balance, zero amount.
+3. **Pay the fee in a stablecoin.** Switch to Arbitrum Sepolia (the club doesn't cover it) or send a third time on Sepolia (daily limit reached): the sponsored row shows why it's skipped, *Stablecoin* is selected with "0.032 tDAI" and a 30-second countdown (it re-quotes by itself; *How is this calculated?* shows gas × price + 5%) → *Send* → prompt (fee locked) → *pending* → *confirmed*: the **fee split**: the stablecoin chip splits into "converted to tETH for gas" and "service". *Blocked*: with *Gas spike* on Sepolia the quote exceeds the sponsor's cap and your max fee; all three routes show their reason and *Send* is replaced by "No route can pay this fee" with two actions: *Raise max fee* and *Switch network*.
 4. **Fallback to native gas.** Demo controls → *Paymaster offline* → on Base Sepolia (0.0031 tETH) the sponsored and stablecoin rows read "Paymaster unreachable" and *Native gas* is selected automatically → send → prompt (fee in tETH) → confirmed; the result says "Paid in tETH: the paymaster was unreachable." On Sepolia (0 tETH) the same situation is *blocked*.
-5. **Run the gas tank.** *Gas tank* → tank gauge (0.1840 tETH, ≈ $588.80, "≈ 320 sponsored transfers left") → *Top up* 100 tUSDC (converted at $3,200 → +0.03125 tETH; fee paid from the tank) → prompt → *pending* → *confirmed*: the gauge rises. → Safeguards: lower *daily limit per member* to 1, or untick Base Sepolia, → *Save* (signed message, no fee) → *pending* → "Saved. Applies to the next transaction." → back in *Wallet*, the sponsored route now shows the new reason. *Pause sponsorship* makes every member fall through to their own routes. *Empty*: "No sponsored fees yet." *Failed*: as above; the form keeps the draft.
+5. **Run the gas tank.** *Gas tank* → tank gauge (0.18343 tETH after the seeded fees, ≈ $586.98, "≈ 321 sponsored transfers left on Sepolia") → *Top up* 50, 100 or 200 tUSDC from Sepolia (converted at $3,200: 50 tUSDC → +0.015625 tETH; the admin fee is paid from the tank) → prompt → *pending* → *confirmed*: the gauge rises. → Safeguards: lower *daily limit per member* to 1, or untick Base Sepolia, → *Save* (signed message, no fee) → *pending* → "Saved. Applies to the next transaction." → back in *Wallet*, the sponsored route now shows the new reason. *Pause sponsorship* makes every member fall through to their own routes. *Empty*: "No sponsored fees yet." *Failed*: as above; the form keeps the draft.
 
 ## 7. Content (EN / FR)
 
@@ -121,7 +121,7 @@ Budgets (guidelines §8 "Restraint"): headline ≤ 10 words, one line ≤ 25, se
 | CTAs | Launch the demo · How a fee gets paid | Lancer la démo · Comment les frais sont payés |
 | Routes H2 | Three ways a fee gets paid | Trois façons de payer les frais |
 | Sponsored | **Sponsored.** Your community or the app pays, within limits it sets. (chip: "Paid by Campus Blockchain Club") | **Sponsorisé.** Votre communauté ou l'application paie, dans les limites qu'elle fixe. |
-| Stablecoin | **In your stablecoin.** Quoted in tUSDC, converted to gas for you. (chip: "1.92 tUSDC · quote 0:30") | **Dans votre stablecoin.** Chiffré en tUSDC, converti en gas pour vous. |
+| Stablecoin | **In your stablecoin.** Quoted in tUSDC, converted to gas for you. (chip: "1.916 tUSDC · quote 0:30") | **Dans votre stablecoin.** Chiffré en tUSDC, converti en gas pour vous. |
 | Native | **Native gas, as a fallback.** If nothing else applies and you hold tETH. (chip: "0.00057 tETH") | **Le gas natif, en dernier recours.** Si rien d'autre ne s'applique et que vous avez du tETH. |
 | Who H2 | Built for the first transaction | Pensé pour la première transaction |
 | Newcomers | **Newcomers.** Paid in stablecoins, zero gas, and still able to move them. | **Nouveaux venus.** Payés en stablecoins, sans gas, et pourtant libres de les utiliser. |
@@ -142,9 +142,9 @@ Budgets (guidelines §8 "Restraint"): headline ≤ 10 words, one line ≤ 25, se
 |-|-|-|
 | H1 / intro | How a fee gets paid · The rules FlexGas follows for every transaction. | Comment les frais sont payés · Les règles que FlexGas suit à chaque transaction. |
 | Cascade | Which route pays · 1 Sponsor: covers this network, under its cap and daily limit. 2 Stablecoin: enough tUSDC or tDAI, quote under your max fee. 3 Native gas: you hold enough tETH. | Quelle option paie · 1 Sponsor : couvre ce réseau, sous son plafond et sa limite du jour. 2 Stablecoin : assez de tUSDC ou de tDAI, devis sous votre plafond. 3 Gas natif : vous avez assez de tETH. |
-| Quote | The stablecoin quote · 95,000 gas × 6 gwei = 0.00057 tETH · × $3,200 = $1.82 · + 5% service = 1.92 tUSDC. $1.82 is converted to tETH to pay the network; $0.10 runs the paymaster. | Le devis en stablecoin · 95 000 gas × 6 gwei = 0,00057 tETH · × 3 200 $ = 1,82 $ · + 5 % de service = 1,92 tUSDC. 1,82 $ est converti en tETH pour payer le réseau ; 0,10 $ fait tourner le paymaster. |
+| Quote | The stablecoin quote · 95,000 gas × 6 gwei = 0.00057 tETH · × $3,200 = $1.82 · + 5% service = 1.916 tUSDC. $1.824 is converted to tETH to pay the network; $0.092 runs the paymaster. | Le devis en stablecoin · 95 000 gas × 6 gwei = 0,00057 tETH · × 3 200 $ = 1,82 $ · + 5 % de service = 1,916 tUSDC. 1,824 $ est converti en tETH pour payer le réseau ; 0,092 $ fait tourner le paymaster. |
 | Safeguards | For you: max fee · 30-second quotes · only the fee token is touched. For sponsors: per-transaction cap · daily limit per member · networks · pause · low-balance alert. | Pour vous : plafond de frais · devis de 30 secondes · seul le jeton des frais est touché. Pour les sponsors : plafond par transaction · limite quotidienne par membre · réseaux · pause · alerte de solde bas. |
-| Networks | Sepolia ≈ $1.82 · Base Sepolia ≈ $0.02 · Arbitrum Sepolia ≈ $0.03 per transfer | idem, formatted for fr-CA |
+| Networks | Sepolia ≈ $1.82 · Base Sepolia ≈ $0.018 · Arbitrum Sepolia ≈ $0.030 per transfer | idem, formatted for fr-CA |
 | Developers | One hook for wallets and dApps: ask FlexGas for routes, show them, send. (disclosure: "Show the integration") | Un seul point d'intégration pour les wallets et les dApps : demandez les options à FlexGas, affichez-les, envoyez. |
 | CTA | Try the three routes. / Launch the demo | Essayez les trois options. / Lancer la démo |
 
@@ -214,3 +214,20 @@ The margin shows up in the app only as part of a quote (and on `/how-it-works` a
 - More than one sponsor, sponsor discovery, per-contract allowlists, invitations to a tank, notifications.
 - Real price feeds: prices are the fixed reference prices; gas prices are per-network constants with small drift and the "gas spike" control.
 - A `/brand` page, a blog, a developers portal or any backend.
+
+## 12. Implementation notes (as shipped)
+
+Decisions taken while working unattended:
+
+- **Routes are computed, not scripted.** `src/lib/demo/routes.ts` is a pure planner used by the wallet, the hero numbers, `/how-it-works` (worked example and network table) and the Open Graph image, so every figure on the site comes from the same rules. The first route that can pay is selected; the visitor can pick another available one before signing.
+- **Stablecoin charges are rounded up to a tenth of a cent** (not a cent), so the 5% margin stays close to 5% on cheap networks (a $0.030 fee costs 0.032 tDAI, not 0.04). Stablecoin amounts therefore show up to three decimals.
+- **The quote refreshes every 30 s** with a ±3% gas-price drift; the countdown freezes while the wallet prompt is open, so the locked quote is the one charged. The cascade replays only when the outcome changes (network, token, reason), not on every refresh.
+- **Admin actions are paid from the tank.** A top-up's own network fee comes out of the tank, so a treasurer with no tETH can still fund it. Safeguard changes are a signed message (no fee).
+- **One sponsor.** The route planner takes one tank; the connected wallet is both a member and the treasurer, which lets the visitor change a safeguard and immediately see its effect on their own routes.
+- **Toasts.** The only toast is "Demo reset". Every other result is shown in place (send result card, gauge and status line, "Saved" line), so no overlay ever covers what it reports on.
+- **One bar on marketing pages**, and one compact app bar under `/app` (sections + a Demo controls pill with a count of active controls). The testnet line appears only in the wallet prompt, for transactions that move value.
+- **Header**: Splitflow's reference `brand.tsx`, `header.tsx`, `nav-links.tsx` and `mobile-menu.tsx`; the Demo chip is tinted `primary/8` in light mode and `primary/15` in dark (AA for its 12px bold text).
+- **Theme**: `theme-2026.json` isn't published on ui.monark.io, so the `theme.json` base (Nunito Sans, variable structure) was used with the guidelines' §3 token block pasted over it in `src/app/globals.css`, plus muted `--success` / `--warning` status colours (always paired with a label).
+- **Registry components** used: `wallet`, `connect-wallet`, `token-amount` (balances), `tx-status`, `network-badge`, plus shadcn `button`, `dialog`, `sheet`, `input`, `label`, `switch`, `dropdown-menu`. The `swap-form` doesn't fit (FlexGas doesn't swap). `token-amount`'s built-in dollar line prints "US$" in `en-CA`, so the dollar line is formatted by the site instead.
+- Dependencies beyond the stack: `next-themes` (theme toggle without a flash), `sonner` (the reset toast), `react-jazzicon` (required by the registry `wallet`), `radix-ui` and `class-variance-authority` (registry components), `shadcn` (its Tailwind stylesheet); `playwright` as a dev dependency for `pnpm screenshots`. No recharts: the gauge and fee split are drawn in code.
+- Copy budget (simplification checklist §4 applied from the start): EN dictionary 1,511 words (FR 1,642), measured with `node scripts/dictcount.mjs`; home = hero + 4 sections, 4 FAQ questions, no eyebrows, card lines ≤ 12 words.
