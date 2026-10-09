@@ -60,11 +60,11 @@ The testnet notice ("Testnet demo · not financial advice · no real funds") app
 ```
 src/
   app/[locale]/          routes: home, how-it-works, app (wallet), app/tank, credits, pricing (unlinked), 404
-  components/site/       standard Monark header and footer, locale switch, theme toggle
+  components/site/       the @monark/ui site header and footer, wired to the routes, i18n and wallet
   components/demo/       the app: wallet view, send card, route list, gas tank, wallet prompt, demo controls
   components/home/       the hero's live send card
   components/diagrams/   the fee split
-  components/ui/         shadcn/ui and @monark/ui registry components (button, dialog, wallet, token-amount, tx-status…)
+  components/ui/         @monark/ui 2 registry items, unmodified (theme, primitives, site shell, wallet-prompt, tx-feedback, demo-controls…)
   i18n/                  typed EN/FR dictionaries
   lib/demo/              simulated chain, wallet, paymaster and route planner
 ```

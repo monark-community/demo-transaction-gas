@@ -6,11 +6,13 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import type { ReactNode } from "react"
 
+import { AppLoading } from "@/components/ui/app-loading"
+import { AppTabs } from "@/components/ui/app-tabs"
 import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
 import { href } from "@/i18n/config"
 import { useDemo, useStorageOk } from "@/lib/demo/store"
 import { connectWallet } from "@/lib/demo/wallet"
-import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
 import { DemoControls } from "./demo-controls"
@@ -34,7 +36,7 @@ export function AppFrame({ children }: { children: ReactNode }) {
         </p>
       ) : null}
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-6 sm:px-6 lg:py-10">
-        {!demo ? <AppLoading label={app.loading} /> : demo.wallet.status !== "connected" ? <ConnectGate /> : children}
+        {!demo ? <AppFrameLoading label={app.loading} /> : demo.wallet.status !== "connected" ? <ConnectGate /> : children}
       </div>
     </div>
   )
@@ -43,58 +45,29 @@ export function AppFrame({ children }: { children: ReactNode }) {
 function AppBar({ connected }: { connected: boolean }) {
   const pathname = usePathname() ?? ""
   const { app, locale } = useAppCopy()
-  const items = [
-    { href: href(locale, "/app"), label: app.nav.wallet, icon: WalletIcon },
-    { href: href(locale, "/app/tank"), label: app.nav.tank, icon: FuelIcon },
-  ]
+  const tabs = connected
+    ? [
+        { href: href(locale, "/app"), label: app.nav.wallet, icon: <WalletIcon />, exact: true },
+        { href: href(locale, "/app/tank"), label: app.nav.tank, icon: <FuelIcon /> },
+      ]
+    : []
 
-  return (
-    <div className="border-b bg-secondary/40">
-      <div className="mx-auto flex min-h-13 max-w-6xl items-center gap-2 px-4 sm:px-6">
-        {connected ? (
-          <nav aria-label={app.nav.label} className="min-w-0 flex-1">
-            <ul className="flex items-center gap-1 py-2">
-              {items.map((item) => {
-                const active = pathname === item.href
-                const Icon = item.icon
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "inline-flex h-9 items-center gap-2 rounded-full px-3.5 text-sm font-semibold transition-colors duration-150",
-                        active ? "bg-card text-foreground ring-1 ring-border" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      <Icon className="size-4" aria-hidden="true" />
-                      {item.label}
-                    </Link>
-                  </li>
-                )
-              })}
-            </ul>
-          </nav>
-        ) : (
-          <div className="flex-1" />
-        )}
-        <DemoControls />
-      </div>
-    </div>
-  )
+  return <AppTabs tabs={tabs} pathname={pathname} LinkComponent={Link} label={app.nav.label} actions={<DemoControls />} />
 }
 
-export function AppLoading({ label }: { label: string }) {
+/** The app's skeleton until the store hydrates: the wallet page's two columns. */
+function AppFrameLoading({ label }: { label: string }) {
   return (
-    <div role="status" aria-live="polite" className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
-      <span className="sr-only">{label}</span>
-      <div className="flex flex-col gap-4">
-        <div className="h-10 w-72 animate-pulse rounded-full bg-muted" />
-        <div className="h-56 animate-pulse rounded-3xl bg-muted" />
-        <div className="h-40 animate-pulse rounded-3xl bg-muted" />
+    <AppLoading label={label}>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_26rem]">
+        <div className="flex flex-col gap-4">
+          <Skeleton className="h-10 w-72 rounded-full" />
+          <Skeleton className="h-56 rounded-3xl" />
+          <Skeleton className="h-40 rounded-3xl" />
+        </div>
+        <Skeleton className="h-[28rem] rounded-3xl" />
       </div>
-      <div className="h-[28rem] animate-pulse rounded-3xl bg-muted" />
-    </div>
+    </AppLoading>
   )
 }
 

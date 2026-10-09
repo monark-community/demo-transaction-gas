@@ -1,9 +1,8 @@
 "use client"
 
-import { useTheme } from "next-themes"
 import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react"
-import { Toaster } from "sonner"
 
+import { Toaster } from "@/components/ui/sonner"
 import type { Dictionary } from "@/i18n"
 import type { Locale } from "@/i18n/config"
 import { initDemo } from "@/lib/demo/store"
@@ -26,7 +25,6 @@ export function useAppCopy(): AppCopy {
 }
 
 export function AppProvider({ value, children }: { value: AppCopy; children: ReactNode }) {
-  const { resolvedTheme } = useTheme()
   const narrow = useSyncExternalStore(
     (cb) => {
       const mq = window.matchMedia("(max-width: 767px)")
@@ -45,7 +43,6 @@ export function AppProvider({ value, children }: { value: AppCopy; children: Rea
       {children}
       <WalletPrompt />
       <Toaster
-        theme={resolvedTheme === "dark" ? "dark" : "light"}
         // The only toast is "Demo reset": every flow reports its result in
         // place (send result, tank gauge, safeguards status), so a toast never
         // covers what it reports on. Desktop: top-right over the app bar;
@@ -53,12 +50,6 @@ export function AppProvider({ value, children }: { value: AppCopy; children: Rea
         position={narrow ? "bottom-center" : "top-right"}
         offset={{ top: 80, right: 24 }}
         mobileOffset={{ bottom: 16, left: 16, right: 16 }}
-        toastOptions={{
-          classNames: {
-            toast: "!rounded-2xl !border !border-border !bg-popover !text-popover-foreground !font-sans !shadow-md",
-            description: "!text-muted-foreground",
-          },
-        }}
       />
     </AppContext.Provider>
   )
