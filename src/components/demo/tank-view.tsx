@@ -4,6 +4,8 @@ import { CheckCircle2Icon, FuelIcon, TriangleAlertIcon } from "lucide-react"
 import { useId, useState } from "react"
 
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import { FieldError } from "@/components/ui/field-error"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
@@ -177,7 +179,7 @@ function TankCard({ demo }: { demo: DemoState }) {
                 value={text}
                 onChange={(e) => setText(e.target.value)}
                 aria-invalid={attempted && !!error}
-                className="h-11 w-36 rounded-2xl text-base font-bold tabular-nums"
+                className="h-11 w-36 text-base font-bold tabular-nums"
               />
               {PRESETS.map((p) => (
                 <Button key={p} type="button" variant="outline" onClick={() => setText(String(p))} className="h-11">
@@ -186,7 +188,7 @@ function TankCard({ demo }: { demo: DemoState }) {
               ))}
             </div>
             <p className="text-sm text-muted-foreground">{t(u.receive, { eth: formatToken(eth, "tETH", locale) })}</p>
-            {attempted && error ? <p className="text-sm text-destructive">{error}</p> : null}
+            <FieldError>{attempted ? error : null}</FieldError>
           </fieldset>
           <div className="flex flex-wrap gap-2">
             <Button type="submit" size="lg" disabled={tx.busy}>
@@ -278,14 +280,10 @@ function Safeguards({ demo, saved, setSaved }: { demo: DemoState; saved: boolean
                 onChange={(e) => setCap(e.target.value)}
                 aria-invalid={!!errors.cap}
                 aria-describedby={errors.cap ? `${id}-cap-e` : undefined}
-                className="h-11 rounded-2xl pl-7 font-bold tabular-nums"
+                className="h-11 pl-7 font-bold tabular-nums"
               />
             </div>
-            {errors.cap ? (
-              <p id={`${id}-cap-e`} className="text-sm text-destructive">
-                {errors.cap}
-              </p>
-            ) : null}
+            <FieldError id={`${id}-cap-e`}>{errors.cap}</FieldError>
           </div>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor={`${id}-daily`}>{g.daily}</Label>
@@ -296,28 +294,25 @@ function Safeguards({ demo, saved, setSaved }: { demo: DemoState; saved: boolean
               onChange={(e) => setDaily(e.target.value)}
               aria-invalid={!!errors.daily}
               aria-describedby={errors.daily ? `${id}-daily-e` : undefined}
-              className="h-11 w-24 rounded-2xl font-bold tabular-nums"
+              className="h-11 w-24 font-bold tabular-nums"
             />
-            {errors.daily ? (
-              <p id={`${id}-daily-e`} className="text-sm text-destructive">
-                {errors.daily}
-              </p>
-            ) : null}
+            <FieldError id={`${id}-daily-e`}>{errors.daily}</FieldError>
           </div>
           <fieldset className="flex flex-col gap-2">
             <legend className="mb-2 text-sm font-semibold">{g.chains}</legend>
             {CHAIN_IDS.map((c) => (
               <label key={c} className="flex min-h-9 cursor-pointer items-center gap-3 text-sm pointer-coarse:min-h-11">
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={chains.includes(c)}
-                  onChange={(e) => setChains((cur) => (e.target.checked ? [...cur, c] : cur.filter((x) => x !== c)))}
-                  className="size-4 accent-[var(--primary)]"
+                  onCheckedChange={(v) => {
+                    setChains((cur) => (v === true ? [...cur, c] : cur.filter((x) => x !== c)))
+                    setSaved(false)
+                  }}
                 />
                 {CHAINS[c].name}
               </label>
             ))}
-            {errors.chains ? <p className="text-sm text-destructive">{errors.chains}</p> : null}
+            <FieldError>{errors.chains}</FieldError>
           </fieldset>
           <div className="flex items-center justify-between gap-4 rounded-2xl border px-4 py-3">
             <Label htmlFor={`${id}-pause`} className="font-semibold">

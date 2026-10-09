@@ -87,7 +87,7 @@ async function connect(page, v, capture) {
 async function fill(page, v, amount, contact, token) {
   if (token) await main(page).getByLabel(v.locale === "fr" ? "Jeton" : "Token", { exact: true }).selectOption(token)
   await main(page).getByLabel(L[v.locale].amount, { exact: true }).fill(amount)
-  await main(page).getByRole("button", { name: contact }).click()
+  await main(page).getByRole("radio", { name: contact }).click()
   await page.waitForTimeout(900) // let the cascade settle
 }
 

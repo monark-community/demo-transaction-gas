@@ -2,13 +2,16 @@
 
 import { CheckCircle2Icon, OctagonXIcon, SendIcon, SlidersHorizontalIcon } from "lucide-react"
 import Link from "next/link"
-import { Popover as PopoverPrimitive } from "radix-ui"
 import { useEffect, useId, useMemo, useState } from "react"
 
 import { FeeSplit } from "@/components/diagrams/fee-split"
 import { Button } from "@/components/ui/button"
+import { FieldError } from "@/components/ui/field-error"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { NativeSelect, NativeSelectOption } from "@/components/ui/native-select"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { TxStatus } from "@/components/ui/tx-status"
 import { WalletAvatar } from "@/components/ui/wallet"
 import { href } from "@/i18n/config"
@@ -21,7 +24,6 @@ import { CONTACTS } from "@/lib/demo/seed"
 import { setPrefs } from "@/lib/demo/store"
 import type { DemoState, RouteKind, StableSymbol, TokenSymbol, TxRecord } from "@/lib/demo/types"
 import { formatBlock, formatToken, formatUsd, shortAddress } from "@/lib/format"
-import { cn } from "@/lib/utils"
 
 import { useAppCopy } from "./app-provider"
 import { RouteList } from "./route-list"
@@ -182,29 +184,25 @@ export function SendCard({ demo }: { demo: DemoState }) {
               onChange={(e) => setAmountText(e.target.value)}
               aria-invalid={attempted && !!errors.amount}
               aria-describedby={attempted && errors.amount ? `${uid}-amount-err` : undefined}
-              className="h-12 min-w-0 flex-1 rounded-2xl text-lg font-bold tabular-nums"
+              className="h-12 min-w-0 flex-1 text-lg font-bold tabular-nums"
             />
             <label className="sr-only" htmlFor={`${uid}-token`}>
               {s.token}
             </label>
-            <select
+            <NativeSelect
               id={`${uid}-token`}
               value={token}
               onChange={(e) => setToken(e.target.value as TokenSymbol)}
-              className="h-12 rounded-2xl border border-input bg-card px-3 text-sm font-bold"
+              className="[&>select]:h-12"
             >
               {TOKENS.map((tk) => (
-                <option key={tk} value={tk}>
+                <NativeSelectOption key={tk} value={tk}>
                   {tk}
-                </option>
+                </NativeSelectOption>
               ))}
-            </select>
+            </NativeSelect>
           </div>
-          {attempted && errors.amount ? (
-            <p id={`${uid}-amount-err`} className="text-sm text-destructive">
-              {errors.amount}
-            </p>
-          ) : null}
+          <FieldError id={`${uid}-amount-err`}>{attempted ? errors.amount : null}</FieldError>
         </div>
 
         {/* Recipient */}
@@ -219,31 +217,28 @@ export function SendCard({ demo }: { demo: DemoState }) {
             onChange={(e) => setTo(e.target.value)}
             aria-invalid={attempted && !!errors.to}
             aria-describedby={attempted && errors.to ? `${uid}-to-err` : undefined}
-            className="h-11 rounded-2xl font-mono text-sm"
+            className="h-11 font-mono text-sm"
           />
-          <ul aria-label={s.contacts} className="flex flex-wrap gap-1.5">
+          <ToggleGroup
+            type="single"
+            variant="chip"
+            size="sm"
+            aria-label={s.contacts}
+            value={contact?.id ?? ""}
+            onValueChange={(id) => {
+              const picked = CONTACTS.find((c) => c.id === id)
+              if (picked) setTo(picked.address)
+            }}
+            className="gap-1.5"
+          >
             {CONTACTS.map((c) => (
-              <li key={c.id}>
-                <button
-                  type="button"
-                  onClick={() => setTo(c.address)}
-                  aria-pressed={sameAddress(c.address, to)}
-                  className={cn(
-                    "inline-flex h-8 items-center gap-1.5 rounded-full border py-0.5 pr-3 pl-1 text-xs font-semibold transition-colors pointer-coarse:h-10",
-                    sameAddress(c.address, to) ? "border-foreground bg-foreground text-background" : "hover:bg-muted"
-                  )}
-                >
-                  <WalletAvatar address={c.address} size={22} />
-                  {c.name}
-                </button>
-              </li>
+              <ToggleGroupItem key={c.id} value={c.id} className="pr-3 pl-1 pointer-coarse:h-10">
+                <WalletAvatar address={c.address} size={22} />
+                {c.name}
+              </ToggleGroupItem>
             ))}
-          </ul>
-          {attempted && errors.to ? (
-            <p id={`${uid}-to-err`} className="text-sm text-destructive">
-              {errors.to}
-            </p>
-          ) : null}
+          </ToggleGroup>
+          <FieldError id={`${uid}-to-err`}>{attempted ? errors.to : null}</FieldError>
         </div>
       </fieldset>
 
@@ -317,7 +312,7 @@ function MaxFee({
   const id = useId()
 
   return (
-    <PopoverPrimitive.Root
+    <Popover
       open={open}
       onOpenChange={(o) => {
         if (o) {
@@ -327,19 +322,13 @@ function MaxFee({
         onOpenChange(o)
       }}
     >
-      <PopoverPrimitive.Trigger asChild>
+      <PopoverTrigger asChild>
         <Button variant="outline" size="xs" disabled={disabled} className="pointer-coarse:h-9">
           <SlidersHorizontalIcon aria-hidden="true" />
           {t(s.maxFee, { max: formatUsd(value, locale) })}
         </Button>
-      </PopoverPrimitive.Trigger>
-      <PopoverPrimitive.Portal>
-        <PopoverPrimitive.Content
-          align="end"
-          sideOffset={6}
-          collisionPadding={16}
-          className="z-50 w-64 rounded-2xl border bg-popover p-4 text-popover-foreground shadow-md outline-none"
-        >
+      </PopoverTrigger>
+      <PopoverContent align="end" sideOffset={6} collisionPadding={16} className="w-64 rounded-2xl p-4">
           <form
             onSubmit={(e) => {
               e.preventDefault()
@@ -358,18 +347,17 @@ function MaxFee({
                 value={draft}
                 onChange={(e) => setDraft(e.target.value)}
                 aria-invalid={error}
-                className="h-10 min-w-0 flex-1 rounded-xl tabular-nums"
+                className="min-w-0 flex-1 tabular-nums"
                 autoFocus
               />
               <Button type="submit" size="default">
                 {s.maxFeeSave}
               </Button>
             </div>
-            {error ? <p className="text-xs text-destructive">{s.errors.maxFee}</p> : null}
+            <FieldError>{error ? s.errors.maxFee : null}</FieldError>
           </form>
-        </PopoverPrimitive.Content>
-      </PopoverPrimitive.Portal>
-    </PopoverPrimitive.Root>
+      </PopoverContent>
+    </Popover>
   )
 }
 

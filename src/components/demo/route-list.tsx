@@ -1,8 +1,9 @@
 "use client"
 
 import { CheckIcon, XIcon } from "lucide-react"
-import { Popover as PopoverPrimitive } from "radix-ui"
 
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import type { Locale } from "@/i18n/config"
 import { t } from "@/i18n/t"
 import { CHAINS, STABLES } from "@/lib/demo/network"
@@ -87,7 +88,6 @@ export function RouteList({
       {plan.routes[selected]?.kind === "stablecoin" && plan.routes[selected]?.ok ? (
         <StableExtras
           route={plan.routes[selected]}
-          feeToken={feeToken}
           onFeeToken={onFeeToken}
           affordable={affordable}
           disabled={disabled}
@@ -160,13 +160,11 @@ function Node({ state, delay }: { state: "selected" | "ok" | "skipped"; delay: n
 
 function StableExtras({
   route,
-  feeToken,
   onFeeToken,
   affordable,
   disabled,
 }: {
   route: Extract<RouteOption, { kind: "stablecoin"; ok: true }>
-  feeToken: StableSymbol
   onFeeToken: (t: StableSymbol) => void
   affordable: StableSymbol[]
   disabled?: boolean
@@ -177,33 +175,24 @@ function StableExtras({
   return (
     <div className="fg-in ml-11 flex flex-wrap items-center gap-2 pt-1 pb-1 [animation-delay:450ms]">
       {affordable.length > 1 ? (
-        <div role="radiogroup" aria-label={app.send.token} className="flex rounded-full border p-0.5">
+        <ToggleGroup
+          type="single"
+          variant="pill"
+          size="sm"
+          aria-label={app.send.token}
+          value={q.token}
+          onValueChange={(v) => v && onFeeToken(v as StableSymbol)}
+        >
           {STABLES.map((s) => (
-            <button
-              key={s}
-              type="button"
-              role="radio"
-              aria-checked={feeToken === s}
-              disabled={disabled || !affordable.includes(s)}
-              onClick={() => onFeeToken(s)}
-              className={cn(
-                "inline-flex h-7 items-center rounded-full px-2.5 text-xs font-bold transition-colors disabled:opacity-50",
-                q.token === s ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
-              )}
-            >
+            <ToggleGroupItem key={s} value={s} disabled={disabled || !affordable.includes(s)}>
               {s}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
       ) : null}
-      <PopoverPrimitive.Root>
-        <PopoverPrimitive.Trigger className="text-sm font-semibold text-primary-ink underline underline-offset-4">{r.calc}</PopoverPrimitive.Trigger>
-        <PopoverPrimitive.Portal>
-          <PopoverPrimitive.Content
-            sideOffset={6}
-            collisionPadding={16}
-            className="z-50 w-72 rounded-2xl border bg-popover p-4 font-mono text-xs text-popover-foreground shadow-md outline-none"
-          >
+      <Popover>
+        <PopoverTrigger className="text-sm font-semibold text-primary-ink underline underline-offset-4">{r.calc}</PopoverTrigger>
+        <PopoverContent sideOffset={6} collisionPadding={16} className="gap-0 rounded-2xl p-4 font-mono text-xs">
             <p>
               {t(r.calcLines.gas, {
                 units: formatNumber(q.units, locale, 0),
@@ -213,9 +202,8 @@ function StableExtras({
             </p>
             <p className="mt-1">{t(r.calcLines.usd, { usd: formatUsd(q.feeUsd, locale) })}</p>
             <p className="mt-1 font-bold">{t(r.calcLines.service, { charge: formatToken(q.charge, q.token, locale) })}</p>
-          </PopoverPrimitive.Content>
-        </PopoverPrimitive.Portal>
-      </PopoverPrimitive.Root>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }
