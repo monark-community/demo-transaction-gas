@@ -1,10 +1,12 @@
-import { ArrowRightIcon, CheckIcon, ChevronDownIcon, MinusIcon, ShieldCheckIcon, UsersIcon } from "lucide-react"
+import { ArrowRightIcon, CheckIcon, MinusIcon, ShieldCheckIcon, UsersIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { FeeSplit } from "@/components/diagrams/fee-split"
-import { SectionDivider } from "@/components/site/section-divider"
+import { Disclosure } from "@/components/ui/disclosure"
+import { SectionDivider } from "@/components/ui/section-divider"
+import { SectionHeading } from "@/components/ui/section-heading"
 import { Button } from "@/components/ui/button"
 import { href, isLocale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
@@ -56,9 +58,7 @@ export default async function HowItWorks({ params }: PageProps<"/[locale]/how-it
 
       {/* Which route pays: the cascade */}
       <section aria-labelledby="cascade" className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-        <h2 id="cascade" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {d.cascade.title}
-        </h2>
+        <SectionHeading titleId="cascade" title={d.cascade.title} />
         <figure className="mt-8 rounded-3xl border bg-card p-6 sm:p-8">
           <ol aria-label={d.cascade.label} className="relative grid gap-8 md:grid-cols-3 md:gap-6">
             <span aria-hidden="true" className="absolute top-5 bottom-5 left-5 w-0.5 bg-primary md:top-5 md:right-[16.66%] md:bottom-auto md:left-[16.66%] md:h-0.5 md:w-auto" />
@@ -82,10 +82,7 @@ export default async function HowItWorks({ params }: PageProps<"/[locale]/how-it
       <section aria-labelledby="quote" className="border-y bg-card/60">
         <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center">
           <div>
-            <h2 id="quote" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-              {d.quote.title}
-            </h2>
-            <p className="mt-2 text-muted-foreground">{d.quote.sub}</p>
+            <SectionHeading titleId="quote" title={d.quote.title} lead={d.quote.sub} />
             <dl className="mt-6 divide-y rounded-2xl border bg-card text-sm">
               {rows.map((row) => (
                 <div key={row.label} className="flex justify-between gap-4 px-4 py-2.5">
@@ -116,9 +113,7 @@ export default async function HowItWorks({ params }: PageProps<"/[locale]/how-it
 
       {/* Safeguards */}
       <section aria-labelledby="safeguards" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6">
-        <h2 id="safeguards" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {d.safeguards.title}
-        </h2>
+        <SectionHeading titleId="safeguards" title={d.safeguards.title} />
         <div className="mt-8 grid gap-5 md:grid-cols-2">
           {[
             { icon: ShieldCheckIcon, ...d.safeguards.you },
@@ -142,9 +137,7 @@ export default async function HowItWorks({ params }: PageProps<"/[locale]/how-it
 
       {/* Networks */}
       <section aria-labelledby="networks" className="mx-auto w-full max-w-6xl px-4 pb-16 sm:px-6">
-        <h2 id="networks" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-          {d.networks.title}
-        </h2>
+        <SectionHeading titleId="networks" title={d.networks.title} />
         <div className="mt-8 overflow-x-auto rounded-2xl border bg-card">
           <table className="w-full min-w-[32rem] text-left text-sm">
             <thead className="border-b text-muted-foreground">
@@ -181,24 +174,25 @@ export default async function HowItWorks({ params }: PageProps<"/[locale]/how-it
       {/* For developers */}
       <section aria-labelledby="dev" className="border-t bg-card/60">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-          <h2 id="dev" className="text-2xl font-bold tracking-display sm:text-[2rem]">
-            {d.dev.title}
-          </h2>
-          <p className="mt-2 text-muted-foreground">{d.dev.body}</p>
-          <details className="group mt-6 rounded-2xl border bg-card">
-            <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between gap-4 px-5 py-3 font-bold [&::-webkit-details-marker]:hidden">
-              <span className="group-open:hidden">{d.dev.show}</span>
-              <span className="hidden group-open:inline">{d.dev.hide}</span>
-              <ChevronDownIcon className="size-5 shrink-0 transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
-            </summary>
-            <pre className="overflow-x-auto border-t px-5 py-4 font-mono text-xs leading-relaxed sm:text-sm">
+          <SectionHeading titleId="dev" title={d.dev.title} lead={d.dev.body} />
+          <Disclosure
+            className="mt-6"
+            contentClassName="p-0"
+            summary={
+              <>
+                <span className="group-data-[state=open]/disclosure:hidden">{d.dev.show}</span>
+                <span className="hidden group-data-[state=open]/disclosure:inline">{d.dev.hide}</span>
+              </>
+            }
+          >
+            <pre className="overflow-x-auto px-5 py-4 font-mono text-xs leading-relaxed sm:text-sm">
               <code>{CODE}</code>
             </pre>
-          </details>
+          </Disclosure>
         </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-16 text-center sm:px-6 lg:py-20">
         <h2 className="text-3xl font-extrabold tracking-display sm:text-4xl">{d.cta.title}</h2>

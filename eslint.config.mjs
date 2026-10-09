@@ -5,6 +5,12 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  // Vendored @monark/ui item, kept identical to the registry: it closes its
+  // mobile sheet from an effect when the pathname changes.
+  {
+    files: ["src/components/ui/site-header.tsx"],
+    rules: { "react-hooks/set-state-in-effect": "off" },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

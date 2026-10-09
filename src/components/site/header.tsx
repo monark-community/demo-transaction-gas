@@ -1,75 +1,102 @@
-import { href, type Locale } from "@/i18n/config"
-import type { Dictionary } from "@/i18n"
+"use client"
 
-import { Brand } from "./brand"
-import { DemoChip } from "./demo-chip"
-import { HeaderAction, type WalletLabels } from "./header-action"
-import { LocaleSwitch } from "./locale-switch"
-import { MobileMenu } from "./mobile-menu"
-import { NavLinks } from "./nav-links"
-import { ThemeToggle } from "./theme"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+import { DemoChip } from "@/components/ui/demo-chip"
+import { HeaderAction } from "@/components/ui/header-action"
+import { LocaleSwitch } from "@/components/ui/locale-switch"
+import { SiteBrand } from "@/components/ui/site-brand"
+import { SiteHeader as MonarkSiteHeader } from "@/components/ui/site-header"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
+import { href, locales, switchLocalePath, type Locale } from "@/i18n/config"
+import { useDemo } from "@/lib/demo/store"
+import { connectWallet, disconnectWallet } from "@/lib/demo/wallet"
+
+/** The header's strings, picked from the dictionary by the (server) layout. */
+export interface HeaderCopy {
+  product: string
+  homeLabel: string
+  nav: { label: string; overview: string; how: string; demo: string }
+  menu: string
+  closeMenu: string
+  menuTitle: string
+  launchDemo: string
+  demoChip: string
+  demoBadge: string
+  theme: string
+  language: { label: string; names: Record<Locale, string>; short: Record<Locale, string> }
+  wallet: {
+    connect: string
+    connecting: string
+    disconnect: string
+    signIn: string
+    signInRow: string
+    signInValue: string
+  }
+}
 
 /**
- * Standard Monark shell header (brand guidelines §10):
+ * The standard Monark shell header (@monark/ui site-header), wired to the
+ * demo's routes, locale and simulated wallet:
  * [mark] {Product}  links…            (• Demo) (EN|FR) (☾) [Primary action]
- * Below `lg`: the brand and a menu button only; everything else is in the sheet.
  */
-export function SiteHeader({ locale, dict }: { locale: Locale; dict: Dictionary }) {
-  const c = dict.common
-  const items = [
-    { href: href(locale), label: c.nav.overview },
-    { href: href(locale, "/how-it-works"), label: c.nav.how },
-    { href: href(locale, "/app"), label: c.nav.demo },
-  ]
+export function SiteHeader({ locale, copy }: { locale: Locale; copy: HeaderCopy }) {
+  const pathname = usePathname() ?? `/${locale}`
+  const demo = useDemo()
   const appHref = href(locale, "/app")
-  const wallet: WalletLabels = {
-    connect: dict.app.wallet.connect,
-    connecting: dict.app.wallet.connecting,
-    disconnect: dict.app.wallet.disconnect,
-    signIn: dict.app.summaries.signIn,
-    signInRow: dict.app.summaries.signInRow,
-    signInValue: dict.app.summaries.signInValue,
-  }
-  const languageNames = { en: c.language.en, fr: c.language.fr }
+  const w = copy.wallet
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-6xl items-center px-4 sm:px-6">
-        <Brand href={href(locale)} name={c.product} label={c.homeLabel} />
-
-        {/* Links: 28px after the brand (20px margin + the link's own 8px padding). */}
-        <nav aria-label={c.nav.label} className="ml-5 hidden lg:block">
-          <NavLinks items={items} className="flex items-center gap-1.5" />
-        </nav>
-
-        <div className="ml-auto hidden items-center gap-2.5 lg:flex">
-          <DemoChip label={c.demoChip} title={c.demoBadge} />
-          <LocaleSwitch locale={locale} label={c.language.label} names={languageNames} short={c.language.short} />
-          <ThemeToggle label={c.theme.toggle} />
-          <HeaderAction appHref={appHref} launchLabel={c.launchDemo} wallet={wallet} />
-        </div>
-
-        <MobileMenu
-          locale={locale}
-          items={items}
+    <MonarkSiteHeader
+      brand={<SiteBrand name={copy.product} href={href(locale)} aria-label={copy.homeLabel} LinkComponent={Link} />}
+      links={[
+        { href: href(locale), label: copy.nav.overview, exact: true },
+        { href: href(locale, "/how-it-works"), label: copy.nav.how },
+        { href: appHref, label: copy.nav.demo },
+      ]}
+      pathname={pathname}
+      LinkComponent={Link}
+      labels={{ nav: copy.nav.label, openMenu: copy.menu, closeMenu: copy.closeMenu, menu: copy.menuTitle }}
+      actions={
+        <>
+          <DemoChip label={copy.demoChip} description={copy.demoBadge} />
+          <LocaleSwitch
+            locales={locales}
+            current={locale}
+            hrefFor={(l) => switchLocalePath(pathname, l)}
+            labels={copy.language}
+            LinkComponent={Link}
+            linkProps={{ prefetch: false }}
+          />
+          <ThemeToggle label={copy.theme} />
+        </>
+      }
+      primaryAction={
+        <HeaderAction
           appHref={appHref}
-          wallet={wallet}
-          className="ml-auto lg:hidden"
-          labels={{
-            open: c.menu,
-            close: c.closeMenu,
-            title: c.menuTitle,
-            description: c.nav.label,
-            launch: c.launchDemo,
-            theme: c.theme.toggle,
-            language: c.language.label,
-            names: languageNames,
-            short: c.language.short,
-            demo: c.demoChip,
-            demoTitle: c.demoBadge,
+          pathname={pathname}
+          launchLabel={copy.launchDemo}
+          LinkComponent={Link}
+          loading={!demo}
+          wallet={{
+            status: demo?.wallet.status,
+            address: demo?.wallet.address,
+            name: demo?.wallet.name,
+            connectLabel: w.connect,
+            connectingLabel: w.connecting,
+            disconnectLabel: w.disconnect,
+            onConnect: () =>
+              void connectWallet({
+                title: w.signIn,
+                rows: [{ label: w.signInRow, value: w.signInValue }],
+                movesValue: false,
+                noFee: true,
+              }),
+            onDisconnect: disconnectWallet,
           }}
         />
-      </div>
-    </header>
+      }
+    />
   )
 }

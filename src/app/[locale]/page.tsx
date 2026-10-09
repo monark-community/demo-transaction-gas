@@ -5,8 +5,9 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import { HeroCard } from "@/components/home/hero-card"
-import { SectionDivider } from "@/components/site/section-divider"
+import { SectionDivider } from "@/components/ui/section-divider"
 import { Button } from "@/components/ui/button"
+import { SectionHeading } from "@/components/ui/section-heading"
 import { href, isLocale } from "@/i18n/config"
 import { getDictionary } from "@/i18n"
 import { formatNumber, formatToken } from "@/lib/format"
@@ -67,9 +68,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       {/* 1. Three ways a fee gets paid: each shown with a fragment of real UI */}
       <section aria-labelledby="routes" className="border-y bg-card/60">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <h2 id="routes" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-            {r.title}
-          </h2>
+          <SectionHeading titleId="routes" title={r.title} />
           <ol className="mt-10 grid gap-5 lg:grid-cols-3">
             <li className="flex flex-col rounded-3xl border bg-card p-6">
               <HandHeartIcon className="size-7 text-primary" strokeWidth={1.75} aria-hidden="true" />
@@ -113,9 +112,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
 
       {/* 2. Who it's for */}
       <section aria-labelledby="who" className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
-        <h2 id="who" className="max-w-2xl text-3xl font-bold tracking-display sm:text-[2rem]">
-          {h.who.title}
-        </h2>
+        <SectionHeading titleId="who" title={h.who.title} className="max-w-2xl" />
         <ul className="mt-10 grid gap-6 md:grid-cols-3">
           {h.who.items.map((item, i) => {
             const photo = PHOTOS[i]!
@@ -137,9 +134,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
       {/* 3. FAQ: the only one on the site */}
       <section aria-labelledby="faq" className="border-t bg-card/60">
         <div className="mx-auto max-w-3xl px-4 py-16 sm:px-6 lg:py-20">
-          <h2 id="faq" className="text-3xl font-bold tracking-display sm:text-[2rem]">
-            {h.faq.title}
-          </h2>
+          <SectionHeading titleId="faq" title={h.faq.title} />
           <div className="mt-8 divide-y rounded-3xl border bg-card">
             {h.faq.items.map((item) => (
               <details key={item.q} className="group px-5">
@@ -154,7 +149,7 @@ export default async function Home({ params }: PageProps<"/[locale]">) {
         </div>
       </section>
 
-      <SectionDivider />
+      <SectionDivider contained />
 
       {/* 4. Closing */}
       <section className="mx-auto w-full max-w-6xl px-4 py-16 text-center sm:px-6 lg:py-24">
