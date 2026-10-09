@@ -21,7 +21,7 @@ Open `/en/app` (or `/fr/app`) and connect the demo wallet. You are Noor Haddad, 
 
 ## Run it locally
 
-Requirements: Node 22 and pnpm 10.
+Requirements: Node 24 and pnpm 10.
 
 ```bash
 pnpm install
