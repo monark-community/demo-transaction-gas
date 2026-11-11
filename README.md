@@ -21,7 +21,7 @@ Open `/en/app` (or `/fr/app`) and connect the demo wallet. You are Noor Haddad, 
 
 ## Run it locally
 
-Requirements: Node 22 and pnpm 10.
+Requirements: Node 22.23.4 or newer on the 22 line and pnpm 10.
 
 ```bash
 pnpm install
@@ -71,7 +71,7 @@ src/
 
 ## Deploy to Vercel
 
-Import the repository in Vercel and deploy with the framework defaults (Next.js, pnpm). No `vercel.json` and no environment variables are required. Every page prerenders.
+Import the repository in Vercel and deploy with the framework defaults (Next.js, pnpm). No `vercel.json` and no environment variables are required. Every page prerenders. `pnpm build` and `pnpm start` stop on a Node release exposed to CVE-2026-111497.
 
 ---
 
